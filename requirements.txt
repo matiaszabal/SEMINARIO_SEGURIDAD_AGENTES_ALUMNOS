@@ -1,0 +1,20 @@
+# Dependencias para correr los labs de Capítulo 1 (labs/ch01-lab*).
+#
+# google-adk: framework de agentes usado por los 6 scripts (Agent, Runner,
+# InMemorySessionService).
+# google-genai: tipos de contenido (google.genai.types) usados por ADK, y
+# requerido por la variante -gcp para hablar con Gemini.
+# litellm: requerido por la variante -ollama, que envuelve el modelo local
+# (qwen3.5:9b vía Ollama) con LiteLlm(model="ollama_chat/...") -no es una
+# dependencia transitiva de google-adk, hace falta instalarlo aparte.
+google-adk>=2.2.0
+google-genai>=1.0.0
+litellm>=1.60.0
+
+# Para correr las variantes -ollama: instalar Ollama (https://ollama.com) y
+# descargar el modelo local con `ollama pull qwen3.5:9b` antes de correr los
+# scripts.
+#
+# Para correr las variantes -gcp: necesitás un proyecto de Google Cloud con
+# Vertex AI habilitado y credenciales configuradas (`gcloud auth
+# application-default login`), o una API key de Gemini via AI Studio.

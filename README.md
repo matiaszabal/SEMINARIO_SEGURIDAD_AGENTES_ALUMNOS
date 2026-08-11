@@ -17,8 +17,9 @@ apertura del seminario en PDF.
 - **`recursos_aprendizaje/`** — Links externos verificados (canales, papers, repos de
   herramientas open-source de seguridad de IA) y una nota práctica sobre correr modelos chicos en
   CPU.
-- **`slides/`** — Slides de apertura del seminario, del panorama de modelos de frontera, y de la
-  explicación de gradiente/fine-tuning, todas en PDF.
+- **`slides/`** — Slides de apertura del seminario, del panorama de modelos de frontera, la
+  explicación de gradiente/fine-tuning, la introducción a los labs de Cap. 1, y la teoría
+  condensada del Tema 1 (IA Agéntica: fundamentos, impulsores y riesgos), todas en PDF.
 
 ## Cómo correr los labs
 

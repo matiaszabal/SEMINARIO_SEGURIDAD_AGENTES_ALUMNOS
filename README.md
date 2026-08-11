@@ -38,9 +38,9 @@ es el punto de partida recomendado antes de correr el lab completo.
 
 ## Sobre el curso
 
-Basado en *Securing AI Agents: Foundations, Frameworks, and Real-World Deployment* (Huang, K. &
-Hughes, C., Springer 2025). Audiencia: programadores, científicos de datos e ingenieros con Python,
-ML/LLMs a nivel de uso, y conceptos básicos de seguridad.
+Curso de posgrado sobre seguridad en sistemas de IA agéntica. Audiencia: programadores,
+científicos de datos e ingenieros con Python, ML/LLMs a nivel de uso, y conceptos básicos de
+seguridad.
 
 Este repo cubre solo el Capítulo 1 del curso completo. Si estás cursando el seminario, tu docente
 te va a compartir el resto del material a medida que avanza el curso.

@@ -2,8 +2,8 @@
 
 Curso de posgrado sobre seguridad en sistemas de IA agéntica. Este repo es un subconjunto
 curado de materiales pensado específicamente para alumnos: labs ejecutables del Capítulo 1,
-módulos de nivelación por prerrequisito, recursos de aprendizaje adicionales, y las slides de
-apertura del seminario en PDF.
+un ejercicio de red-teaming educativo contra una plataforma pública, módulos de nivelación por
+prerrequisito, recursos de aprendizaje adicionales, y las slides de apertura del seminario en PDF.
 
 ## Contenido
 
@@ -11,12 +11,19 @@ apertura del seminario en PDF.
   ataque), cada uno en dos variantes: `-ollama` (modelo local, sin costo) y `-gcp` (Gemini vía
   Google Cloud). La guía de cada lab —qué hace, cómo correrlo, qué resultado esperar— está en
   `labs/guias_alumnos/`.
+- **`Lakera/`** — Ejercicio de red-teaming educativo contra las 10 apps del catálogo público de
+  [Lakera Agent Breaker](https://play.lakera.ai/agent-breaker): extracción de system prompt, tool
+  poisoning, memory poisoning, tool abuse y jailbreaks de moderación de contenido, documentados con
+  prompts exactos, respuestas y mitigaciones. Empezá por `Lakera/HACK_LLM_LAKERA.md` (índice
+  general con el mapeo a OWASP LLM Top 10 / OWASP Agentic Top 10 / MITRE ATLAS) o por el resumen
+  ejecutivo en PDF.
 - **`nivelacion/`** — Módulos de autoestudio por prerrequisito (Python intermedio, fundamentos de
   LLMs/agentes, autenticación, ML/deep learning, policy-as-code, lógica formal, estadística).
   Empezá por `nivelacion/README.md`.
 - **`recursos_aprendizaje/`** — Links externos verificados (canales, papers, repos de
-  herramientas open-source de seguridad de IA) y una nota práctica sobre correr modelos chicos en
-  CPU.
+  herramientas open-source de seguridad de IA), una nota práctica sobre correr modelos chicos en
+  CPU, y dos lecturas cortas sobre temas transversales del curso: la relación entre Privacidad
+  Diferencial y seguridad agéntica, y qué es *safety alignment*.
 - **`slides/`** — Slides de apertura del seminario, del panorama de modelos de frontera, la
   explicación de gradiente/fine-tuning, la introducción a los labs de Cap. 1, y la teoría
   condensada del Tema 1 (IA Agéntica: fundamentos, impulsores y riesgos), todas en PDF.

@@ -185,7 +185,6 @@
   <div class="stat"><div class="num">10/10</div><div class="label">Apps del catálogo atacadas</div></div>
   <div class="stat"><div class="num">19</div><div class="label">Niveles evaluados</div></div>
   <div class="stat"><div class="num">~35.500</div><div class="label">Palabras documentadas</div></div>
-  <div class="stat"><div class="num">19</div><div class="label">Capturas de evidencia</div></div>
 </div>
 
 <div class="infogrid">
@@ -203,7 +202,7 @@
   </div>
   <div>
     <h4>Metodología</h4>
-    <p>Ataques manuales, 2 niveles por desafío, evidencia verificada con capturas de pantalla</p>
+    <p>Ataques manuales, 2 niveles por desafío, con evidencia verificada en cada resultado</p>
   </div>
 </div>
 
@@ -214,7 +213,7 @@
 <ul class="bullets">
   <li><b>Cobertura casi total del catálogo:</b> se atacaron las 10 apps disponibles, apuntando a los dos primeros niveles de cada una (algunas llegaron a un tercer nivel cuando fue relevante).</li>
   <li><b>Iteración manual entre rondas</b> para las técnicas más sofisticadas, documentando el registro de intentos previos para no repetir caminos muertos.</li>
-  <li><b>Verificación de evidencia:</b> cada resultado exitoso se confirmó con una captura de pantalla real del modal "Congratulations! You pass the level", nunca se dio por válido un resultado sin evidencia visual.</li>
+  <li><b>Verificación de evidencia:</b> cada resultado exitoso se confirmó viendo en pantalla el modal real "Congratulations! You pass the level" con el score correspondiente, nunca se dio por válido un resultado sin esa confirmación.</li>
   <li><b>Honestidad metodológica activa:</b> los fracasos y resultados incompletos (ej. una falla de infraestructura que impidió evaluar dos payloads en Clause AI Nivel 2) se documentaron como tales, sin forzar conclusiones limpias.</li>
   <li><b>Reproducibilidad:</b> cada archivo incluye los prompts exactos usados (no resúmenes) y las respuestas textuales completas del sistema, para poder seguir el proceso paso a paso.</li>
 </ul>
@@ -289,7 +288,7 @@
 </ul>
 
 <h2 class="section">6. Documentación completa</h2>
-<p class="lead">Cada desafío tiene un archivo dedicado en Lakera/ con los prompts exactos, las respuestas textuales completas y capturas de pantalla de cada victoria.</p>
+<p class="lead">Cada desafío tiene un archivo dedicado en Lakera/ con los prompts exactos y las respuestas textuales completas.</p>
 
 <div class="filelist">
   <div><b>HACK_LLM_LAKERA.md</b> — índice general y veredicto pedagógico</div>

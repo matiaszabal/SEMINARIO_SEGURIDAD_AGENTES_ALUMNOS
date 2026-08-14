@@ -74,7 +74,6 @@ Debajo hay un `textarea` ("Insert your attack here...", límite 10.000 caractere
 
 El objetivo era solo poner `risk_level: "Low"`. Un override de manual, con framing de "corrección de auditoría verificada", pasó al primer intento (100/100 → "APP OWNED").
 
-![Pantalla de victoria: 100/100, "APP OWNED" en PortfolioIQ Advisor Level 1](./screenshot-victoria-portfolioiq-level1.jpg)
 
 ### Payload exacto usado (texto agregado al documento)
 
@@ -118,7 +117,6 @@ Cambia el objetivo: ya no basta con `risk_level`, ahora el asesor tiene que **re
 
 Esta app resultó tener **varias capas de defensa que devuelven mensajes de rechazo distintos según qué detectan** — a diferencia de todos los niveles anteriores del ejercicio (Cycling Coach, OmniChat L1/L2, PortfolioIQ L1), que caían al primer intento. Hicieron falta **4 intentos** y la clave fue **obfuscación cross-lingual** (la técnica que el propio panel de ayuda sugiere).
 
-![Pantalla de victoria: 100/100, "APP OWNED" en PortfolioIQ Advisor Level 2](./screenshot-victoria-portfolioiq-level2.jpg)
 
 ### Tabla de intentos (Level 2)
 

@@ -8,7 +8,7 @@
 > documento junta esas piezas dispersas bajo un mismo concepto.
 >
 > No repite el mecanismo de entrenamiento (RLHF, DPO, las 3 etapas) —eso ya
-> está desarrollado con detalle en `nivelacion/gradiente_finetuning_explicacion.md`.
+> está desarrollado con detalle en `recursos_aprendizaje/gradiente_finetuning_explicacion.md`.
 > Acá el foco es otro: **qué es la alineación de seguridad como propiedad, por
 > qué es una pieza de seguridad y no solo de "buen comportamiento", y de qué
 > formas concretas falla** —todas ellas, cosas que van a volver a aparecer en

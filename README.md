@@ -22,8 +22,10 @@ prerrequisito, recursos de aprendizaje adicionales, y las slides de apertura del
   Empezá por `nivelacion/README.md`.
 - **`recursos_aprendizaje/`** — Links externos verificados (canales, papers, repos de
   herramientas open-source de seguridad de IA), una nota práctica sobre correr modelos chicos en
-  CPU, y dos lecturas cortas sobre temas transversales del curso: la relación entre Privacidad
-  Diferencial y seguridad agéntica, y qué es *safety alignment*.
+  CPU, el desarrollo completo de gradiente/backpropagation/fine-tuning, y lecturas cortas sobre
+  temas transversales del curso: la relación entre Privacidad Diferencial y seguridad agéntica,
+  qué es *safety alignment*, el mecanismo de los ataques adversariales de evasión (FGSM/PGD/GCG),
+  embeddings y búsqueda vectorial en RAG, y cómo se ataca la capa de explicabilidad (SHAP/LIME).
 - **`slides/`** — Slides de apertura del seminario, del panorama de modelos de frontera, la
   explicación de gradiente/fine-tuning, la introducción a los labs de Cap. 1, y la teoría
   condensada del Tema 1 (IA Agéntica: fundamentos, impulsores y riesgos), todas en PDF.

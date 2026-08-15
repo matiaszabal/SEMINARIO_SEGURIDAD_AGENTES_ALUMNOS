@@ -1,16 +1,17 @@
 # Seminario Seguridad en Agentes de IA — UNLP 2026 (material para alumnos)
 
 Curso de posgrado sobre seguridad en sistemas de IA agéntica. Este repo es un subconjunto
-curado de materiales pensado específicamente para alumnos: labs ejecutables del Capítulo 1,
+curado de materiales pensado específicamente para alumnos: labs ejecutables de los Capítulos 1 y 2,
 un ejercicio de red-teaming educativo contra una plataforma pública, módulos de nivelación por
 prerrequisito, recursos de aprendizaje adicionales, y las slides de apertura del seminario en PDF.
 
 ## Contenido
 
 - **`labs/`** — Los 3 labs del Capítulo 1 (anatomía de un agente, confused deputy, superficie de
-  ataque), cada uno en dos variantes: `-ollama` (modelo local, sin costo) y `-gcp` (Gemini vía
-  Google Cloud). La guía de cada lab —qué hace, cómo correrlo, qué resultado esperar— está en
-  `labs/guias_alumnos/`.
+  ataque) y los 3 labs del Capítulo 2 (generador automático de threat models MAESTRO, RAG
+  poisoning, observabilidad estructurada por capa MAESTRO), cada uno en dos variantes: `-ollama`
+  (modelo local, sin costo) y `-gcp` (Gemini vía Google Cloud). La guía de cada lab —qué hace,
+  cómo correrlo, qué resultado esperar— está en `labs/guias_alumnos/`.
 - **`Lakera/`** — Ejercicio de red-teaming educativo contra las 10 apps del catálogo público de
   [Lakera Agent Breaker](https://play.lakera.ai/agent-breaker): extracción de system prompt, tool
   poisoning, memory poisoning, tool abuse y jailbreaks de moderación de contenido, documentados con
@@ -52,5 +53,5 @@ Curso de posgrado sobre seguridad en sistemas de IA agéntica. Audiencia: progra
 científicos de datos e ingenieros con Python, ML/LLMs a nivel de uso, y conceptos básicos de
 seguridad.
 
-Este repo cubre solo el Capítulo 1 del curso completo. Si estás cursando el seminario, tu docente
-te va a compartir el resto del material a medida que avanza el curso.
+Este repo cubre solo los Capítulos 1 y 2 del curso completo. Si estás cursando el seminario, tu
+docente te va a compartir el resto del material a medida que avanza el curso.

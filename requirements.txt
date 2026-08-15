@@ -1,6 +1,6 @@
-# Dependencias para correr los labs de Capítulo 1 (labs/ch01-lab*).
+# Dependencias para correr los labs de Capítulo 1 y 2 (labs/ch01-lab*, ch02-lab*).
 #
-# google-adk: framework de agentes usado por los 6 scripts (Agent, Runner,
+# google-adk: framework de agentes usado por todos los scripts (Agent, Runner,
 # InMemorySessionService).
 # google-genai: tipos de contenido (google.genai.types) usados por ADK, y
 # requerido por la variante -gcp para hablar con Gemini.
@@ -18,3 +18,17 @@ litellm>=1.60.0
 # Para correr las variantes -gcp: necesitás un proyecto de Google Cloud con
 # Vertex AI habilitado y credenciales configuradas (`gcloud auth
 # application-default login`), o una API key de Gemini via AI Studio.
+
+# Capítulo 2 — Lab 2.1 (MAESTRO Automático): valida la salida estructurada
+# del agente contra un schema Pydantic.
+pydantic>=2.6.0
+
+# Capítulo 2 — Lab 2.2 (RAG Poisoning): vector store local. Los embeddings
+# por defecto de ChromaDB corren vía ONNX local (all-MiniLM-L6-v2, sin API
+# ni conectividad en tiempo de query) -no hace falta sentence-transformers.
+chromadb>=0.4.22
+
+# Capítulo 2 — Lab 2.3 (Observabilidad MAESTRO): Cloud Logging de GCP es
+# opcional -el lab corre 100% local con print() si no hay credenciales o si
+# el paquete no está instalado (fallback silencioso, ver el .py).
+# google-cloud-logging>=3.0.0

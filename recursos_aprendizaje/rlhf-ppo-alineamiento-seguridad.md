@@ -18,10 +18,13 @@
 > aprendida, no una regla dura verificada matemáticamente
 > (`safety-alignment-seguridad-agentica.md`).
 >
-> **Qué no cubre.** La derivación matemática completa de PPO o DPO (las
-> funciones de pérdida exactas, la formalización de la divergencia KL). Se
-> queda en la intuición mecánica y en la arquitectura del pipeline —con esa
-> base, la matemática se lee después sin sorpresas.
+> **Qué no cubre.** La derivación completa del *policy gradient theorem* que
+> sostiene a PPO, ni la estimación de *advantage* (GAE) que usa el crítico
+> —esas sí se quedan en la intuición mecánica. La derivación de DPO, en
+> cambio, se incluye completa: es corta, se sostiene con las mismas
+> herramientas de la Parte 2 de `gradiente_finetuning_explicacion.md`, y
+> explica *por qué* DPO puede prescindir del *reward model* y de PPO, no
+> solo *que* puede.
 
 ## De "predecir texto plausible" a "rechazar con criterio"
 
@@ -150,6 +153,46 @@ implementan esa idea:
    que la respuesta completa fuera buena o mala, en vez de juzgarla entera
    y a ciegas.
 
+### El loop completo, paso a paso
+
+Vale la pena fijar los roles con precisión, porque es fácil mezclarlos: **el
+*reward model* es la función de pérdida externa** —un evaluador que toma una
+respuesta y devuelve un número—, y **PPO es el optimizador** —el algoritmo
+que toma ese número y decide cómo mover los pesos del LLM. Uno mide, el otro
+actúa. En cada paso del entrenamiento:
+
+```
+[Prompt x] ──► [LLM, "Actor"] ──► [Respuesta y]
+                                        │
+                                        ▼
+                                [Reward Model]
+                                        │
+                                        ▼
+                              Score escalar (R)
+                                        │
+                                        ▼
+                        [Algoritmo de RL: PPO]
+                                        │
+                                        ▼
+                    Actualización de pesos Δθ del LLM
+```
+
+1. **Forward pass**: el LLM recibe el prompt `x` y genera la respuesta `y`,
+   token por token, según su distribución de probabilidad actual.
+2. **Reward scoring**: el par `(x, y)` pasa por el *reward model*, que emite
+   el score `R`.
+3. **Advantage y KL**: PPO toma ese score, le resta la penalización por
+   alejarse del modelo de referencia (la divergencia KL ya vista), y usa el
+   crítico para calcular el *advantage* —cuánto mejor fue esta respuesta
+   respecto de lo que el crítico esperaba, no el score crudo.
+4. **Backward pass**: PPO aplica el *clipped objective* sobre ese *advantage*
+   y actualiza los pesos, haciendo más (o menos) probables los tokens de esa
+   respuesta en el futuro.
+
+Cuando se dice "alineamos el modelo con RLHF", el motor que ejecuta el
+aprendizaje por refuerzo propiamente dicho es PPO —el *reward model* es la
+guía que le indica hacia dónde ir, no el mecanismo que mueve los pesos.
+
 **Por qué la tendencia se movió hacia DPO**: PPO es estable y efectivo, pero
 caro — necesita mantener **cuatro modelos simultáneos en memoria** durante
 el entrenamiento (el que aprende, el de referencia, el *reward model* y el
@@ -159,6 +202,124 @@ función de pérdida cerrada que se optimiza con descenso de gradiente
 estándar —sin *reward model* separado, sin crítico, sin ciclo de RL
 explícito. Es una simplificación real de ingeniería, no solo una elección de
 gusto.
+
+## DPO en profundidad: cómo elimina al Reward Model y a PPO
+
+La idea intuitiva de DPO (*Direct Preference Optimization*, Rafailov et al.,
+2023) ya apareció arriba: reformular el problema como una única función de
+pérdida cerrada. Lo que todavía no se explicó es **por qué** eso es posible
+—y la respuesta es una observación matemática elegante, no un truco de
+ingeniería: **el propio LLM ya contiene, implícitamente, su mejor *reward
+model* posible.** DPO no elimina el *reward model* por las buenas: demuestra
+que nunca hizo falta entrenarlo por separado.
+
+### La derivación, paso a paso
+
+**Paso A — el objetivo de partida.** RLHF clásico busca la política `π_θ`
+(los pesos del LLM) que maximiza la recompensa esperada del *reward model*
+`r(x,y)`, penalizada por cuánto se aleja del modelo de referencia `π_ref`
+—el mismo objetivo que ya se describió en palabras más arriba, ahora en
+notación:
+
+```
+max_θ  E[r(x,y)] − β · D_KL(π_θ(y|x) || π_ref(y|x))
+```
+
+`β` es el coeficiente que regula esa distancia —el mismo "freno lingüístico"
+de la sección anterior, ahora con nombre en la fórmula.
+
+**Paso B — la solución tiene forma cerrada.** Resolver ese objetivo (con
+multiplicadores de Lagrange) da una política óptima `π*` con esta forma
+exacta:
+
+```
+π*(y|x) = (1/Z(x)) · π_ref(y|x) · exp((1/β) · r(x,y))
+```
+
+donde `Z(x)` es un normalizador (la "función de partición"). Despejando
+`r(x,y)` de esa misma ecuación, se obtiene la **recompensa implícita**: la
+diferencia de log-probabilidad entre el modelo ajustado y el de referencia,
+escalada por `β`:
+
+```
+r(x,y) = β · log( π_θ(y|x) / π_ref(y|x) ) + β · log Z(x)
+```
+
+La intuición detrás de esta ecuación es el punto central de todo el
+argumento: **la "recompensa" de una respuesta no es más que cuánto más (o
+menos) probable la hace el modelo ajustado, comparado con el modelo base.**
+No hace falta un evaluador externo para medir eso —ya está adentro de las
+dos políticas.
+
+**Paso C — sustituir en el modelo de preferencia.** El modelo estándar de
+preferencia humana (Bradley-Terry) dice que la probabilidad de que una
+respuesta preferida `y_w` (*winner*) le gane a una rechazada `y_l`
+(*loser*) es una sigmoide de la diferencia de recompensas:
+
+```
+P(y_w ≻ y_l | x) = σ( r(x,y_w) − r(x,y_l) )
+```
+
+Sustituyendo la recompensa implícita del Paso B en esta ecuación, el término
+`log Z(x)` **se cancela algebraicamente** —porque `Z(x)` depende solo del
+prompt `x`, no de qué respuesta se compare, y aparece una vez con signo
+positivo y otra con signo negativo. Lo que queda, sin ningún normalizador
+pendiente, es la función de pérdida de DPO:
+
+```
+L_DPO(θ) = −E[ log σ( β·log(π_θ(y_w|x)/π_ref(y_w|x))
+                     − β·log(π_θ(y_l|x)/π_ref(y_l|x)) ) ]
+```
+
+Esa cancelación es la jugada completa: empezó como un problema de RL con un
+*reward model* externo, y terminó siendo una pérdida que se calcula
+únicamente con las probabilidades que el propio LLM (y su copia de
+referencia) ya asignan a las dos respuestas del par.
+
+### Qué significa esto en la práctica
+
+Con esta pérdida, entrenar por preferencias deja de ser un problema de
+*reinforcement learning* y pasa a ser, mecánicamente, un problema de
+clasificación sobre pares —el mismo descenso de gradiente y backpropagation
+de siempre, sin generar nada nuevo durante el entrenamiento:
+
+- **Sube la probabilidad de `y_w`** (penaliza si la respuesta preferida
+  pierde probabilidad respecto al modelo de referencia).
+- **Baja la probabilidad de `y_l`** (penaliza si la respuesta rechazada
+  —la peligrosa, en el caso de seguridad— gana probabilidad).
+- **El gradiente se autopondera por el error.** Si el modelo ya prefería
+  correctamente `y_w` sobre `y_l`, el ajuste es chico. Si el modelo venía
+  equivocado —le asignaba más probabilidad a la respuesta peligrosa—, el
+  gradiente de corrección es máximo. Esto sale solo de la forma de la
+  sigmoide, sin que nadie lo programe explícitamente.
+
+### Limitaciones de DPO en alineamiento de seguridad
+
+DPO no desplazó a PPO por completo en seguridad de frontera, por dos
+límites reales:
+
+- **No explora online.** DPO entrena sobre un dataset *estático* de pares ya
+  etiquetados. Si un ataque nuevo cae fuera de la distribución de ese
+  dataset, DPO no tiene forma de descubrirlo durante el entrenamiento —solo
+  aprende de los pares que ya tiene. PPO, al generar respuestas nuevas en
+  cada paso del loop de RL, sí explora activamente el espacio de respuestas
+  posibles.
+- **Es sensible a `β` y a pares ambiguos.** Un `β` mal calibrado, o un
+  dataset con pares de preferencia poco claros, puede degradar la
+  diversidad de respuestas del modelo o producir *over-refusal* severo —la
+  misma falla de la sección anterior, ahora con una causa técnica concreta:
+  la pérdida de DPO no tiene ningún mecanismo propio que distinga "esto es
+  ambiguo" de "esto es claramente peor".
+
+Por eso las implementaciones más recientes (Llama 3 es el caso documentado
+más arriba) no usan DPO puro sobre un dataset fijo: usan variantes
+**Iterative / Online DPO**, donde se generan respuestas nuevas con la
+política actual en cada ronda, un *reward model* (o un evaluador) las
+etiqueta como `y_w`/`y_l`, y recién con esos pares frescos se corre otra
+epoch de DPO. Es, en los hechos, reintroducir una forma de exploración y de
+evaluación externa —lo que PPO ya hacía— pero por fuera del loop de RL,
+manteniendo la pérdida simple y barata de DPO en el paso de optimización
+propiamente dicho.
 
 ## La infraestructura detrás del pipeline
 
@@ -182,15 +343,23 @@ conceptualmente distinto del fine-tuning ordinario:
   uno para odio/violencia, otro para contenido de ciberseguridad, otro para
   riesgo CBRN— y combinar sus puntajes con una ponderación para obtener la
   recompensa final que ve PPO.
-- **Costo de memoria de PPO.** Como se vio arriba, PPO necesita tener
-  activos simultáneamente el modelo en entrenamiento (*policy*), el modelo
-  de referencia congelado, el *reward model* y el crítico — del orden de
-  4 veces el consumo de VRAM de una inferencia estándar sobre el mismo
-  modelo base. Esto exige orquestación distribuida (frameworks como
-  DeepSpeed-Chat, Megatron-LM o similares) para paralelizar tanto la
-  generación de respuestas como la actualización de gradientes. Es, en la
-  práctica, la razón de ingeniería más concreta detrás del giro de la
-  industria hacia DPO y variantes más livianas.
+- **Costo de memoria de PPO frente a DPO.** La diferencia de arquitectura
+  entre ambos pipelines es, en la práctica, la razón de ingeniería más
+  concreta detrás del giro de la industria hacia DPO:
+
+  | | Pipeline con PPO | Pipeline con DPO |
+  |---|---|---|
+  | Modelos en VRAM durante entrenamiento | 4: *policy* (LLM a entrenar), referencia (SFT congelado), *reward model*, crítico | 2: *policy* (LLM a entrenar), referencia (congelado) |
+  | Mecanismo de generación | Genera respuestas nuevas en cada paso (RL online) — lento e inestable | Pasadas forward/backward estándar sobre datos de preferencia ya recolectados (offline) |
+  | Estabilidad de entrenamiento | Sensible a hiperparámetros (learning rates de *actor*/crítico, banda de *clipping*, peso de KL) | Comparable a una pérdida de clasificación estándar — más estable |
+  | Infraestructura | Orquestación distribuida (Ray, DeepSpeed) para alternar generación y entrenamiento | Compatible con el mismo pipeline estándar que se usa para SFT |
+
+  Con PPO, esos 4 modelos activos simultáneamente representan del orden de
+  4 veces el consumo de VRAM de una inferencia estándar sobre el modelo
+  base, y exigen paralelizar tanto la generación de respuestas como la
+  actualización de gradientes. DPO evita ese costo por diseño: como se ve en
+  la sección anterior, su pérdida se calcula sobre pares de preferencia ya
+  existentes, sin generar nada nuevo durante el entrenamiento.
 
 ## Para seguir pensando
 
@@ -204,3 +373,9 @@ conceptualmente distinto del fine-tuning ordinario:
    otra demasiado poca. ¿Qué característica del *reward model* o del dataset
    de entrenamiento controla ese balance, y por qué ese balance nunca puede
    fijarse una sola vez y olvidarse?
+3. *Iterative/Online DPO* reintroduce, por fuera del loop de optimización,
+   la exploración y la evaluación externa que la pérdida de DPO había
+   eliminado. Estructuralmente, ¿en qué se parece esa solución a volver a
+   tener un *reward model* separado? ¿Qué es, entonces, lo que DPO realmente
+   ahorra frente a PPO cuando se lo usa de forma iterativa: el cómputo, la
+   complejidad, o ambos por igual?

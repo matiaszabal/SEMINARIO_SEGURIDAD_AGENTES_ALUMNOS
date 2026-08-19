@@ -7,7 +7,7 @@ No es un lab de ataque: es el lab de fundamentos que hace falta para poder leer 
 ## Las piezas que corren
 
 - **`read_file(path)` / `write_file(path, content)`**: las dos tools del agente, funciones Python planas (ADK v2 no usa el decorador `@tool`). Cada una imprime `[EJECUTOR] Tool call: ...` antes de ejecutarse y `[EJECUTOR] Tool result: ...` después -esa es la evidencia de que la tool corrió de verdad, no una inferencia del texto que el modelo escriba después.
-- **El agente (`anatomy_lab`)**: usa `qwen3.5:9b` corriendo local vía Ollama (en vez de `gemini-2.0-flash` del libro), con el wrapper `LiteLlm` de ADK. Instrucción: completar la tarea usando las tools disponibles, con una regla obligatoria antepuesta (ver más abajo).
+- **El agente (`anatomy_lab`)**: usa `qwen3.5:9b` corriendo local vía Ollama (en vez de `gemini-2.0-flash`), con el wrapper `LiteLlm` de ADK. Instrucción: completar la tarea usando las tools disponibles, con una regla obligatoria antepuesta (ver más abajo).
 - **`Runner` + `InMemorySessionService`**: el mecanismo canónico de ADK v2 para ejecutar al agente turno a turno -no existe `agent.run("texto")` en esta versión del SDK.
 
 ## El flujo
@@ -22,7 +22,7 @@ No es un lab de ataque: es el lab de fundamentos que hace falta para poder leer 
 
 ## Por qué importa la verificación
 
-Cada tool imprime su propia evidencia de efecto (`[EJECUTOR] Tool call/result`) independientemente de lo que el modelo termine narrando. Esto importa porque, con un modelo local más chico que Gemini, es más fácil que el agente **alucine** una confirmación de escritura o lectura sin haber llamado realmente a la tool. Por eso la instrucción del agente antepone una REGLA OBLIGATORIA en mayúsculas exigiendo la llamada real antes de responder, y por eso hay un print de evidencia también en `write_file` (el libro original solo lo tenía en `read_file`).
+Cada tool imprime su propia evidencia de efecto (`[EJECUTOR] Tool call/result`) independientemente de lo que el modelo termine narrando. Esto importa porque, con un modelo local más chico que Gemini, es más fácil que el agente **alucine** una confirmación de escritura o lectura sin haber llamado realmente a la tool. Por eso la instrucción del agente antepone una REGLA OBLIGATORIA en mayúsculas exigiendo la llamada real antes de responder, y por eso hay un print de evidencia también en `write_file` (originalmente solo estaba en `read_file`).
 
 ## Resultado esperado
 

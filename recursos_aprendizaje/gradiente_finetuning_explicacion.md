@@ -9,7 +9,7 @@ tags: [gradiente, backpropagation, descenso-de-gradiente, fine-tuning, lora, rlh
 
 # El gradiente, cómo entrena una red neuronal, y las 3 técnicas modernas de fine-tuning
 
-> **Relación con el resto del repo**: este documento desarrolla en profundidad un tema que `nivelacion/04-machine-learning-deep-learning.md` da por prerrequisito y delega a fuentes externas (3Blue1Brown, Khan Academy) sin desarrollarlo -acá sí se desarrolla con texto propio. Las definiciones de fine-tuning y sus técnicas están alineadas deliberadamente con la página 14 ("20 LLM Fine-Tuning Techniques") de `slides/SLIDES1/guion_narracion_intro_seminario.md`, que ya es la fuente vetada del curso para esta terminología -este documento no la contradice, la desarrolla.
+> **Relación con el resto del repo**: este documento desarrolla en profundidad un tema que `nivelacion/04-machine-learning-deep-learning.md` da por prerrequisito y delega a fuentes externas (3Blue1Brown, Khan Academy) sin desarrollarlo -acá sí se desarrolla con texto propio. Las definiciones de fine-tuning y sus técnicas están alineadas deliberadamente con la terminología usada en la introducción del seminario ("20 LLM Fine-Tuning Techniques") -este documento no la contradice, la desarrolla.
 
 ---
 

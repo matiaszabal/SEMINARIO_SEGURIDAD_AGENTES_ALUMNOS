@@ -75,8 +75,8 @@ el contenido.
 
 Traer al contexto un documento con contenido malicioso —vía Semantic Search
 Manipulation o directamente porque el atacante logró que se indexe— es el
-paso previo típico de **RAG Data Poisoning** (ya cubierto en el guion de
-Capa 2): el mecanismo de k-NN no distingue "esto es un hecho a citar" de
+paso previo típico de **RAG Data Poisoning** (ya cubierto en el Lab 2.2 —
+ver `labs/guias_alumnos/lab22_rag_poisoning.md`): el mecanismo de k-NN no distingue "esto es un hecho a citar" de
 "esto es una instrucción a ejecutar" — trae el vector más cercano y lo
 concatena al prompt como contexto confiable, sin ninguna separación
 sintáctica entre dato e instrucción. El modelo, corriente abajo, hereda el

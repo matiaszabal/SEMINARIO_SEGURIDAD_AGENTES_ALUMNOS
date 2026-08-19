@@ -8,7 +8,7 @@ Prueba si un agente puede aplicar el proceso MAESTRO de 6 pasos (descomposición
 
 - **`MaestroThreatModel` (Pydantic)**: el contrato de salida -7 capas nombradas, lista de amenazas por capa, amenazas cross-layer, top-5 riesgos. Define qué cuenta como "un threat model completo", no solo "una respuesta que suena razonable".
 - **`analyze_layer` / `identify_cross_layer_threats`**: tools deterministas (Python puro) que resuelven nombres canónicos de capa/combinaciones -el agente las llama para anclar su razonamiento, no delegan ningún juicio de seguridad al LLM.
-- **`maestro_agent`**: el agente tal cual lo define el libro -`output_schema=MaestroThreatModel` + `tools=[...]`, modelo qwen3.5:9b local vía Ollama (`LiteLlm`, `num_ctx=16384`, `temperature=0.2`, `reasoning_effort="none"`).
+- **`maestro_agent`**: el agente base -`output_schema=MaestroThreatModel` + `tools=[...]`, modelo qwen3.5:9b local vía Ollama (`LiteLlm`, `num_ctx=16384`, `temperature=0.2`, `reasoning_effort="none"`).
 - **`maestro_agent_manual`**: agente alternativo -mismas tools, mismo modelo, pero SIN `output_schema` nativo: el schema esperado se describe como texto plano en la instrucción, y el parseo es 100% manual del lado de Python.
 
 ## El flujo
